@@ -1,0 +1,38 @@
+name: Build DLL
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+
+      - name: Configure CMake
+        run: cmake -D CMAKE_BUILD_TYPE=Release -S . -B build -G Ninja
+
+      - name: Build Terminus DLL
+        run: cmake --build build --config Release --target Terminus --
+
+      - name: Check DLL
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "build/Terminus.dll")) {
+            throw "Terminus.dll was not created"
+          }
+
+      - name: Upload DLL
+        uses: actions/upload-artifact@v4
+        with:
+          name: Terminus-DLL
+          path: build/Terminus.dll
