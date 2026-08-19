@@ -19,7 +19,7 @@ jobs:
           arch: amd64
 
       - name: Configure CMake
-        run: cmake -D CMAKE_BUILD_TYPE=Release -S . -B build -G Ninja
+        run: cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_POLICY_VERSION_MINIMUM=3.5 -S . -B build -G Ninja
 
       - name: Build Terminus DLL
         run: cmake --build build --config Release --target Terminus --
